@@ -1,0 +1,3 @@
+[submodule "src/main/scala/rtl/MySpinalHardware"]
+	path = src/main/scala/rtl/MySpinalHardware
+	url = https://github.com/wel97459/MySpinalHardware
