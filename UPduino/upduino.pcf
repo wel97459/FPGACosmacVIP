@@ -30,8 +30,8 @@ set_io -nowarn gpio_34 34
 set_io -nowarn gpio_43 43
 set_io -nowarn gpio_36 36
 set_io -nowarn gpio_42 42
-set_io -nowarn gpio_38 38
-set_io -nowarn gpio_28 28
+set_io -nowarn Sync 38
+set_io -nowarn Video 28
 
 # Normal GPIO pins, right side
 
@@ -46,14 +46,15 @@ set_io -nowarn gpio_10 10
 
 # Following are also found on v2.x of the UPduino
 set_io -nowarn gpio_12 12
+
 set_io -nowarn -pullup yes reset_ 21
+
 set_io -nowarn gpio_13 13
 set_io -nowarn gpio_19 19
-
-set_io -nowarn lcd_rst 18
-set_io -nowarn lcd_dc 11
-set_io -nowarn lcd_sdi 9
-set_io -nowarn lcd_sck 6
+set_io -nowarn gpio_18 18
+set_io -nowarn gpio_11 11
+set_io -nowarn gpio_9 9
+set_io -nowarn gpio_6 6
 
 set_io -nowarn keypad_row[3] 44
 set_io -nowarn keypad_row[2] 4
