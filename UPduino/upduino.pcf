@@ -30,8 +30,8 @@ set_io -nowarn gpio_34 34
 set_io -nowarn gpio_43 43
 set_io -nowarn gpio_36 36
 set_io -nowarn gpio_42 42
-set_io -nowarn Sync 38
-set_io -nowarn Video 28
+set_io -nowarn sync 38
+set_io -nowarn video 28
 
 # Normal GPIO pins, right side
 
@@ -41,7 +41,7 @@ set_io -nowarn Video 28
 # Note: On board 12MHz clock can be brought to IOB_25B_G3 (pin 20) which is a global
 # clock input. Short across R16 (labelled OSC on the board) to enable 12MHz clock to
 # pin 20.
-set_io -nowarn gpio_20 20
+set_io -nowarn clk_12Mhz 20
 set_io -nowarn gpio_10 10
 
 # Following are also found on v2.x of the UPduino

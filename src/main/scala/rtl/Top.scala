@@ -14,10 +14,10 @@ import MyHardware._
 class Top extends Component {
     val io = new Bundle {
         val reset_ = in Bool
-        val gpio_20 = in Bool //12Mhz CLK
+        val clk_12Mhz = in Bool //12Mhz CLK
 
-        val Video = out Bool
-        val Sync = out Bool
+        val video = out Bool
+        val sync = out Bool
 
         val led_red = out Bool
         val led_green = out Bool
@@ -31,7 +31,7 @@ class Top extends Component {
     val clk17Domain = ClockDomain.internal(name = "Core17",  frequency = FixedFrequency(17.625 MHz))
     val clk1Domain = ClockDomain.internal(name = "Core1",  frequency = FixedFrequency(1.7625 MHz))
 
-    //Settings 
+    //PLL Settings 
     val PLL_CONFIG = SB_PLL40_PAD_CONFIG(
         DIVR = B"0000", DIVF = B"0101110", DIVQ = B"101", FILTER_RANGE = B"001",
         FEEDBACK_PATH = "SIMPLE", PLLOUT_SELECT = "GENCLK", 
@@ -43,7 +43,7 @@ class Top extends Component {
     
     PLL.BYPASS := False
     PLL.RESETB := True
-    PLL.REFERENCECLK := io.gpio_20
+    PLL.REFERENCECLK := io.clk_12Mhz
 
     clk17Domain.clock := PLL.PLLOUTGLOBAL
     clk17Domain.reset := !io.reset_
@@ -114,8 +114,8 @@ class Top extends Component {
         Cpu.io.EF_n := Cat(B"1", keypad.io.KeyOut, B"1", Pixie.io.EFx)
 
         val beeper = CounterFreeRun(1000)
-        io.Sync := Pixie.io.CompSync_
-        io.Video := Pixie.io.Video
+        io.sync := Pixie.io.CompSync_
+        io.video := Pixie.io.Video
 
         io.led_red := !(Cpu.io.Q & beeper < 25)
         io.led_green := !(remapper & beeper < 25)
