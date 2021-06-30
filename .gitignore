@@ -43,6 +43,7 @@ project/target/*
 #User
 /*.vhd
 /*.v
+UPduino3/Top.v
 *.cf
 *.json
 *.vcd
