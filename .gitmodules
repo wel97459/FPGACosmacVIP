@@ -7,3 +7,6 @@
 [submodule "src/main/scala/rtl/MySpinalHardware"]
 	path = src/main/scala/rtl/MySpinalHardware
 	url = https://github.com/wel97459/MySpinalHardware
+[submodule "src/main/scala/rtl/SpinalTFT"]
+	path = src/main/scala/rtl/SpinalTFT
+	url = https://github.com/wel97459/SpinalTFT.git
