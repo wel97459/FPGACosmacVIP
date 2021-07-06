@@ -25,8 +25,10 @@ I have found that these LCD's can still work at a SPI clock of 42Mhz and still b
 
 ## External Hardware Connections
 ![Video Circuit](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Video%20output%20circuit.png)
+
 The resistors where select based on trying different combinations of common resistors in LTSpice, to get the right output voltages.
 ![Keypad Connections](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Keypad%20circuit.png)
+
 This should be the layout of any 4x4 key matrix.  
 ![UPduino Pinout](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/UP3%20pinout.png)
 
