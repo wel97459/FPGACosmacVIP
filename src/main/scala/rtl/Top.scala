@@ -136,7 +136,7 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
             io.sync := Pixie.io.CompSync_
             io.video := Pixie.io.Video
 
-            io.led_red := !(Cpu.io.Q & beeper < 25)
+            io.led_red := !(Cpu.io.Q & beeper < 100)
         }
     }
 
@@ -171,6 +171,6 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
 
 object TopVerilog {
     def main(args: Array[String]) {
-        SpinalVerilog(new Top(true, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
+        SpinalVerilog(new Top(false, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
     }
 }
