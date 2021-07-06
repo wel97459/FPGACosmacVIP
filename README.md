@@ -24,11 +24,11 @@ If you want other options for install SpinalHDL use the [Getting Stated](https:/
 I have found that these LCD's can still work at a SPI clock of 42Mhz and still be stable.
 
 ## External Hardware Connections
-![Video Circuit](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Video output circuit.png)
+![Video Circuit](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Video%20output%20circuit.png)
 The resistors where select based on trying different combinations of common resistors in LTSpice, to get the right output voltages.
 ![Keypad Connections](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Keypad%20circuit.png)
 This should be the layout of any 4x4 key matrix.  
-![UPduino Pinout](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/UP3 pinout.png)
+![UPduino Pinout](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/UP3%20pinout.png)
 
 ### Optional LCD
 If you want to use the `ILI9341 2.2" 240x320 LCD`, on line 174 in Top.scala, change the `false` to `true`, right before the RAM/ROM file paths. This will add the hardware to drive the LCD.  One thing to note when using the LCD is that it doesn't have the bandwidth over SPI to draw every frame, and displays about 1 out of 4 frames vs what is shown in the video output.   
