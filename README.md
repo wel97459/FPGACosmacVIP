@@ -24,7 +24,7 @@ If you want other options for install SpinalHDL use the [Getting Stated](https:/
 I have found that these LCD's can still work at a SPI clock of 42Mhz and still be stable.
 
 ## External Hardware Connections
-The resistors where select based on trying different combinations of common resistors in LTSpice, to get the right output voltages.
+The resistors for the video output where select based on trying different combinations of common resistors in LTSpice, to get the right voltages.
 
 ![Video Circuit](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Video%20output%20circuit.png)
 
