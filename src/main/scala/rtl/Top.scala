@@ -19,14 +19,16 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
         val sync = out Bool
 
         val led_red = out Bool
-
-        val keypad_col = in Bits(4 bits)
-        val keypad_row = out Bits(4 bits)
-
-        val lcd_rst = ifGen(withLcd) (out Bool)
-        val lcd_dc = ifGen(withLcd) (out Bool)
-        val lcd_sdo = ifGen(withLcd) (out Bool)
-        val lcd_sck = ifGen(withLcd) (out Bool)
+        val keypad = new Bundle {
+            val col = in Bits(4 bits)
+            val row = out Bits(4 bits)
+        }
+        val lcd = new Bundle {
+            val sck = ifGen(withLcd) (out Bool)
+            val rst = ifGen(withLcd) (out Bool)
+            val dc = ifGen(withLcd) (out Bool)
+            val sdo = ifGen(withLcd) (out Bool)
+        }
     }
     noIoPrefix()
     
@@ -115,7 +117,7 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
                     romBootLatch := True
                 }
 
-                when(!romBootLatch || Cpu.io.Addr16.asUInt >= 0x8000) {
+                when(!romBootLatch || Cpu.io.Addr16.asUInt >= 0x8000 && Cpu.io.Addr16.asUInt <= 0x81ff) {
                     Cpu.io.DataIn := Rom.io.douta
                 }elsewhen(Cpu.io.Addr16.asUInt < 0x2000) {
                     Cpu.io.DataIn := Ram.io.douta
@@ -126,8 +128,8 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
             val keypad = new Keypad()
                 keypad.io.LatchKey := (Cpu.io.N === 2 && Cpu.io.TPB && !Cpu.io.MRD)
                 keypad.io.Key := Cpu.io.DataOut(3 downto 0)
-                io.keypad_row := ~keypad.io.KeypadRow
-                keypad.io.KeypadCol := io.keypad_col
+                io.keypad.row := ~keypad.io.KeypadRow
+                keypad.io.KeypadCol := io.keypad.col
 
             Cpu.io.EF_n := Cat(B"1", keypad.io.KeyOut, B"1", Pixie.io.EFx)
 
@@ -161,10 +163,7 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
             LCD.io.dataClk := dataClkD
             LCD.io.data := data
             
-            io.lcd_rst := LCD.io.lcd_rst
-            io.lcd_dc := LCD.io.lcd_dc
-            io.lcd_sck := LCD.io.lcd_sck
-            io.lcd_sdo := LCD.io.lcd_sdo
+            io.lcd <> LCD.io.lcd
         }
     })
 }

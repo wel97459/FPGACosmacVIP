@@ -24,15 +24,15 @@ If you want other options for install SpinalHDL use the [Getting Stated](https:/
 I have found that these LCD's can still work at a SPI clock of 42Mhz and still be stable.
 
 ## External Hardware Connections
-The resistors for the video output where select based on trying different combinations of common resistors in LTSpice, to get the right voltages.
+The resistors for the video output where select based on trying different combinations of common resistors in LTSpice, to get the right voltages:
 
 ![Video Circuit](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Video%20output%20circuit.png)
 
-Common layout of a 4x4 keypad matrix.
+Common layout of a 4x4 keypad matrix:
 
 ![Keypad Connections](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/Keypad%20circuit.png)
 
-This is the connection for the UPduino v3.
+This is the connection for the UPduino v3:
 
 ![UPduino Pinout](https://github.com/wel97459/FPGACosmacVIP/blob/main/docs/UP3%20pinout.png)
 

@@ -21,11 +21,12 @@ class LCD_Pixie(val Delay: BigInt) extends Component
 
         val data = in Bits(8 bits)
         val dataClk = in Bool
-
-        val lcd_rst = out Bool
-        val lcd_dc = out Bool
-        val lcd_sdo = out Bool
-        val lcd_sck = out Bool
+        val lcd = new Bundle {
+            val sck = out Bool
+            val rst = out Bool
+            val dc = out Bool
+            val sdo = out Bool
+        }
 
         val test = out Bool
     }
@@ -38,10 +39,10 @@ class LCD_Pixie(val Delay: BigInt) extends Component
     tft.io.data := data
     tft.io.data_clk := data_clk
 
-    io.lcd_rst := tft.io.SPI_RST
-    io.lcd_dc := tft.io.SPI_DC
-    io.lcd_sck := tft.io.SPI_SCL
-    io.lcd_sdo := tft.io.SPI_SDA
+    io.lcd.rst := tft.io.SPI_RST
+    io.lcd.dc := tft.io.SPI_DC
+    io.lcd.sck := tft.io.SPI_SCL
+    io.lcd.sdo := tft.io.SPI_SDA
     
     val byteCounter = Counter(1025)
 
