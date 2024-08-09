@@ -1,11 +1,11 @@
-package mylib
+package rtl
 
 import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
 
 import TFT_Driver._
-import MyHardware._
+import MySpinalHardware._
 
 object LCD_Pixie {
     def apply(cycles: BigInt) : LCD_Pixie = new LCD_Pixie(cycles)
@@ -16,19 +16,19 @@ class LCD_Pixie(val Delay: BigInt) extends Component
 {
     var io = new Bundle()
     {
-        val startFrame = in Bool
-        val startLine = in Bool
+        val startFrame = in Bool()
+        val startLine = in Bool()
 
         val data = in Bits(8 bits)
-        val dataClk = in Bool
+        val dataClk = in Bool()
         val lcd = new Bundle {
-            val sck = out Bool
-            val rst = out Bool
-            val dc = out Bool
-            val sdo = out Bool
+            val sck = out Bool()
+            val rst = out Bool()
+            val dc = out Bool()
+            val sdo = out Bool()
         }
 
-        val test = out Bool
+        val test = out Bool()
     }
 
     var tft = new TFT_ILI9341(Delay)
