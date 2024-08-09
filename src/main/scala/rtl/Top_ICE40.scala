@@ -1,33 +1,32 @@
-package mylib
+package rtl
 
 import spinal.core._
 import spinal.lib._
 import spinal.lib.blackbox.lattice.ice40._
 
 import Spinal1802._
-import MyHardware._
+import MySpinalHardware._
 import TFT_Driver._
-import MyHardware._
 
 
 //Hardware definition
-class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extends Component {
+class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) extends Component {
     val io = new Bundle {
-        val reset_ = in Bool
-        val clk_12Mhz = in Bool //12Mhz CLK
-        val video = out Bool
-        val sync = out Bool
+        val reset_ = in Bool()
+        val clk_12Mhz = in Bool() //12Mhz CLK
+        val video = out Bool()
+        val sync = out Bool()
 
-        val led_red = out Bool
+        val led_red = out Bool()
         val keypad = new Bundle {
             val col = in Bits(4 bits)
             val row = out Bits(4 bits)
         }
         val lcd = new Bundle {
-            val sck = ifGen(withLcd) (out Bool)
-            val rst = ifGen(withLcd) (out Bool)
-            val dc = ifGen(withLcd) (out Bool)
-            val sdo = ifGen(withLcd) (out Bool)
+            val sck = ifGen(withLcd) (out Bool())
+            val rst = ifGen(withLcd) (out Bool())
+            val dc = ifGen(withLcd) (out Bool())
+            val sdo = ifGen(withLcd) (out Bool())
         }
     }
     noIoPrefix()
@@ -78,6 +77,7 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
         val areaDiv = new SlowArea(10) {
             
             val Cpu = new Spinal1802()
+            //val Cpu = new new1802.new1802()
             Cpu.io.Wait_n := True
             Cpu.io.DMA_In_n := True
 
@@ -96,13 +96,13 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
             Cpu.io.DMA_Out_n := Pixie.io.DMAO
             Cpu.io.Clear_n := Pixie.io.Clear
             
-            val Rom = new Ram(romFile, log2Up(0x1ff))
+            val Rom = new RamInit(romFile, log2Up(0x1ff))
                 Rom.io.ena := True
                 Rom.io.wea := 0
                 Rom.io.dina := 0x00
                 Rom.io.addra := Cpu.io.Addr16(8 downto 0)
 
-            val Ram = new Ram(ramFile, log2Up(0x1fff))
+            val Ram = new RamInit(ramFile, log2Up(0x1fff))
                 Ram.io.ena := True
                 Ram.io.wea := (!Cpu.io.MWR).asBits 
                 Ram.io.dina := Cpu.io.DataOut
@@ -138,7 +138,7 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
             io.sync := Pixie.io.CompSync_
             io.video := Pixie.io.Video
 
-            io.led_red := !(Cpu.io.Q & beeper < 100)
+            io.led_red := !(Cpu.io.Q & beeper < 50)
         }
     }
 
@@ -168,8 +168,6 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
     })
 }
 
-object TopVerilog {
-    def main(args: Array[String]) {
-        SpinalVerilog(new Top(false, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
-    }
+object Top_ICE40_Verilog extends App {
+  Config.spinal.generateVerilog(new Top_ICE40(true, "./data/test_1861.bin", "./data/vip.rom"))
 }
