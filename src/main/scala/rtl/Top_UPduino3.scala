@@ -88,8 +88,8 @@ class Top_ice40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
 
             val Ram = new RamInit(ramFile, log2Up(0x1fff))
                 Ram.io.ena := True
-                Ram.io.wea := (!cosmacVIP.io.ram.wr).asBits 
-                Ram.io.dina := cosmacVIP.io.ram.din
+                Ram.io.wea := cosmacVIP.io.ram.wr.asBits
+                Ram.io.dina := cosmacVIP.io.ram.dout
                 cosmacVIP.io.ram.din := Ram.io.douta
                 Ram.io.addra := cosmacVIP.io.ram.addr
 
@@ -127,5 +127,5 @@ class Top_ice40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
 }
 
 object Top_ice40_Verilog extends App {
-  Config.spinal.generateVerilog(new Top_ice40(false, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
+  Config.spinal.generateVerilog(new Top_ice40(true, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
 }

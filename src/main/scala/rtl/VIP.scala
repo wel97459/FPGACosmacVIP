@@ -91,7 +91,7 @@ class VIP() extends Component {
         when(!romBootLatch || Cpu.io.Addr16.asUInt >= 0x8000 && Cpu.io.Addr16.asUInt <= 0x81ff) {
             Cpu.io.DataIn := io.rom.data
         }elsewhen(Cpu.io.Addr16.asUInt < 0x2000) {
-            Cpu.io.DataIn := io.ram.dout
+            Cpu.io.DataIn := io.ram.din
         }otherwise{
             Cpu.io.DataIn := 0x00
         }
