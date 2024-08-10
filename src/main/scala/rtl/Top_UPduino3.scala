@@ -5,29 +5,29 @@ import spinal.lib._
 import spinal.lib.blackbox.lattice.ice40._
 
 import Spinal1802._
-import MyHardware._
+import Spinal1861._
 import TFT_Driver._
-import MyHardware._
+import MySpinalHardware._
 
 
 //Hardware definition
-class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extends Component {
+class Top_ice40(val withLcd: Boolean, val ramFile: String, val romFile: String) extends Component {
     val io = new Bundle {
-        val reset_ = in Bool
-        val clk_12Mhz = in Bool //12Mhz CLK
-        val video = out Bool
-        val sync = out Bool
+        val reset_ = in Bool()
+        val clk_12Mhz = in Bool() //12Mhz CLK
+        val video = out Bool()
+        val sync = out Bool()
 
-        val led_red = out Bool
+        val led_red = out Bool()
         val keypad = new Bundle {
             val col = in Bits(4 bits)
             val row = out Bits(4 bits)
         }
         val lcd = new Bundle {
-            val sck = ifGen(withLcd) (out Bool)
-            val rst = ifGen(withLcd) (out Bool)
-            val dc = ifGen(withLcd) (out Bool)
-            val sdo = ifGen(withLcd) (out Bool)
+            val sck = ifGen(withLcd) (out Bool())
+            val rst = ifGen(withLcd) (out Bool())
+            val dc = ifGen(withLcd) (out Bool())
+            val sdo = ifGen(withLcd) (out Bool())
         }
     }
     noIoPrefix()
@@ -76,27 +76,35 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
 
         //Dived the 17.625Mhz by 10 = 1.7625Mhz
         val areaDiv = new SlowArea(10) {
-            var VIP = new Top()
+            var cosmacVIP = new VIP()
+                cosmacVIP.io.reset := reset
 
-            val Rom = new Ram(romFile, log2Up(0x1ff))
+            val Rom = new RamInit(romFile, log2Up(0x1ff))
                 Rom.io.ena := True
                 Rom.io.wea := 0
                 Rom.io.dina := 0x00
-                Rom.io.addra := VIP.io.rom.addr
+                Rom.io.addra := cosmacVIP.io.rom.addr
+                cosmacVIP.io.rom.data := Rom.io.douta
 
-            val Ram = new Ram(ramFile, log2Up(0x1fff))
+            val Ram = new RamInit(ramFile, log2Up(0x1fff))
                 Ram.io.ena := True
-                Ram.io.wea := (!Cpu.io.MWR).asBits 
-                Ram.io.dina := Cpu.io.DataOut
-                Ram.io.addra := Cpu.io.Addr16(12 downto 0)
+                Ram.io.wea := (!cosmacVIP.io.ram.wr).asBits 
+                Ram.io.dina := cosmacVIP.io.ram.din
+                cosmacVIP.io.ram.din := Ram.io.douta
+                Ram.io.addra := cosmacVIP.io.ram.addr
+
+            io.sync := cosmacVIP.io.sync
+            io.video := cosmacVIP.io.video
+            io.led_red := cosmacVIP.io.q
+            io.keypad <> cosmacVIP.io.keypad
         }
     }
 
     val lcd = ifGen(withLcd) (new Area(){    
-        val lcd_startFrame = !Core17.areaDiv.Pixie.io.INT
-        val lcd_startLine = !Core17.areaDiv.Pixie.io.DMAO
-        val lcd_dataClk = (Core17.areaDiv.Cpu.io.TPB && Core17.areaDiv.Cpu.io.SC === 2)
-        val lcd_data = Core17.areaDiv.Cpu.io.DataOut
+        val lcd_startFrame = !Core17.areaDiv.cosmacVIP.io.Pixie.INT
+        val lcd_startLine = !Core17.areaDiv.cosmacVIP.io.Pixie.DMAO
+        val lcd_dataClk = (Core17.areaDiv.cosmacVIP.io.CPU.TPB && Core17.areaDiv.cosmacVIP.io.CPU.SC === 2)
+        val lcd_data = Core17.areaDiv.cosmacVIP.io.CPU.DataOut
 
         val Core48 = new ClockingArea(clk48Domain) {
             //Clock Crossing
@@ -118,8 +126,6 @@ class Top(val withLcd: Boolean, val ramFile: String, val romFile: String) extend
     })
 }
 
-object TopVerilog {
-    def main(args: Array[String]) {
-        SpinalVerilog(new Top(false, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
-    }
+object Top_ice40_Verilog extends App {
+  Config.spinal.generateVerilog(new Top_ice40(false, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
 }
