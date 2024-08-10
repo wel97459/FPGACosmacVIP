@@ -127,5 +127,5 @@ class Top_ice40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
 }
 
 object Top_ice40_Verilog extends App {
-  Config.spinal.generateVerilog(new Top_ice40(true, "./data/Chip8_Tetris2.bin", "./data/vip.rom"))
+  Config.spinal.generateVerilog(new Top_ice40(true, "./data/test_1861.bin", "./data/vip.rom"))
 }

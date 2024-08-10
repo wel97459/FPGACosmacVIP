@@ -1,13 +1,13 @@
 //Generate the MyTopLevel's Verilog using the above custom configuration.
-package mylib
+// package mylib
 
-import spinal.core._
-import spinal.lib._
-import spinal.lib.blackbox.lattice.ice40._
+// import spinal.core._
+// import spinal.lib._
+// import spinal.lib.blackbox.lattice.ice40._
 
-import Spinal1802._
-import MySpinalHardware._
-import TFT_Driver._
+// import Spinal1802._
+// import MySpinalHardware._
+// import TFT_Driver._
 
 // object ComxGen {
 //     def main(args: Array[String]) {
