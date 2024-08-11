@@ -7,6 +7,8 @@
 .history/
 .lib/
 dist/*
+boot/
+java*/
 target
 lib_managed/
 src_managed/
@@ -43,7 +45,7 @@ project/target/*
 #User
 /*.vhd
 /*.v
-UPduino3/Top.v
+UPduino3/Top*
 *.cf
 *.json
 *.vcd
@@ -54,4 +56,5 @@ UPduino3/Top.v
 
 simWorkspace/
 tmp/
+gen/
 null

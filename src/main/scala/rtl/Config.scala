@@ -1,5 +1,5 @@
 
-package mylib
+package Cosmac
 
 import spinal.core._
 import spinal.core.sim._

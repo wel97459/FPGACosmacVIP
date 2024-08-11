@@ -1,19 +1,19 @@
-TARGET=Top_ice40
-OBJS+=../src/main/scala/comx35/$(TARGET).scala
-OBJS+=../src/main/scala/comx35/Config_ice40.scala
-HW_FILES=./gen/$(TARGET)* # TODO: add support to vhdl somehow
-TOP_FILE=./gen/$(TARGET).v
+TARGET=Top_ICE40
+OBJS+=../src/main/scala/rtl/$(TARGET).scala
+OBJS+=../src/main/scala/rtl/Config.scala
+HW_FILES=../gen/$(TARGET)* # TODO: add support to vhdl somehow
+TOP_FILE=../gen/$(TARGET).v
 PIN_BINDING_FILE=upduino.pcf
 
 all: prog
 
 # generate hardware code from spinal code
-#$(TOP_FILE): $(OBJS)
-#	sbt "runMain comx35.$(TARGET)_Verilog"
+$(TOP_FILE): $(OBJS)
+	cd .. && sbt "runMain Cosmac.$(TARGET)_Verilog"
 
 # synthetize rtl (generates a json file)
-$(TARGET).json: $(TOP_FILE)
-	yosys -p "synth_ice40 -top $(TARGET) -json $@" -q $(HW_FILES)
+$(TARGET).json: $(HW_FILES)
+	yosys -p "synth_ice40 -top $(TARGET) -json $@" -q $(TOP_FILE)
 
 # transform synthetized rtl + pin mapping into fpga config file
 $(TARGET)_out.config: $(TARGET).json $(PIN_BINDING_FILE)

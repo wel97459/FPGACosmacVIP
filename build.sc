@@ -2,7 +2,7 @@ import mill._, scalalib._
 
 val spinalVersion = "1.10.2a"
 
-object CosmacVIP extends SbtModule {
+object Cosmac extends SbtModule {
   def scalaVersion = "2.12.18"
   override def millSourcePath = os.pwd
   def sources = T.sources(

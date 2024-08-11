@@ -1,4 +1,4 @@
-package mylib
+package Cosmac
 
 import spinal.core._
 import spinal.lib._
@@ -17,6 +17,8 @@ class VIP() extends Component {
         val sync = out Bool()
         val q = out Bool()
 
+        val Start = in Bool()
+        val Wait = in Bool()
         val rom = new Bundle {
             val addr = out Bits(9 bits)
             val data = in Bits(8 bits)
@@ -49,7 +51,7 @@ class VIP() extends Component {
     }        
 
     val Cpu = new Spinal1802()
-        Cpu.io.Wait_n := True
+        Cpu.io.Wait_n := io.Wait
         Cpu.io.DMA_In_n := True
         io.CPU.TPB := Cpu.io.TPB
         io.CPU.SC := Cpu.io.SC
