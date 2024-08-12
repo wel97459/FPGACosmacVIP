@@ -45,6 +45,7 @@ project/target/*
 #User
 /*.vhd
 /*.v
+UPduino3/Top*
 *.cf
 *.json
 *.vcd
@@ -55,4 +56,5 @@ project/target/*
 
 simWorkspace/
 tmp/
+gen/
 null

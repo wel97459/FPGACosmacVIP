@@ -1,7 +1,12 @@
-TARGET=Top_ice40
+TARGET=Top_ICE40
 OBJS+=../src/main/scala/rtl/$(TARGET).scala
 OBJS+=../src/main/scala/rtl/Config.scala
-HW_FILES=../gen/$(TARGET)* # TODO: add support to vhdl somehow
+HW_FILES+=../gen/$(TARGET).v
+HW_FILES+=../gen/$(TARGET).v_toplevel_Core17_areaDiv_Ram_mem.bin
+HW_FILES+=../gen/$(TARGET).v_toplevel_Core17_areaDiv_Ram_mem.bin
+HW_FILES+=../gen/$(TARGET).v_toplevel_Core17_pro_StartMSG_Rom.bin
+HW_FILES+=../gen/$(TARGET).v_toplevel_lcd_Core48_LCD_ParamsRom.bin
+HW_FILES+=../gen/$(TARGET).v_toplevel_lcd_Core48_LCD_tft_initParamsRom.bin
 TOP_FILE=../gen/$(TARGET).v
 PIN_BINDING_FILE=upduino.pcf
 
@@ -9,10 +14,10 @@ all: prog
 
 # generate hardware code from spinal code
 $(TOP_FILE): $(OBJS)
-	cd .. && sbt "runMain mylib.$(TARGET)_Verilog"
+	cd .. && rm -f ../gen/* && sbt "runMain Cosmac.$(TARGET)_Verilog"
 
 # synthetize rtl (generates a json file)
-$(TARGET).json: $(TOP_FILE)
+$(TARGET).json: $(HW_FILES)
 	yosys -p "synth_ice40 -top $(TARGET) -json $@" -q $(TOP_FILE)
 
 # transform synthetized rtl + pin mapping into fpga config file
