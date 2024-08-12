@@ -38,6 +38,15 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
     //Define clock domains
     val clk48Domain = ClockDomain.internal(name = "Core48",  frequency = FixedFrequency(48 MHz))
     val clk17Domain = ClockDomain.internal(name = "Core17",  frequency = FixedFrequency(17.625 MHz))
+    val clk12Domain = ClockDomain.internal(name = "Core12",  frequency = FixedFrequency(12 MHz))
+
+    val Core12 = new ClockingArea(clk12Domain) {
+        var reset = Reg(Bool) init (False)
+        var rstCounter = CounterFreeRun(255)
+        when(rstCounter.willOverflow){
+            reset := True
+        }
+    }
 
     //Allow clock domain crossing.
     clk48Domain.setSyncronousWith(clk17Domain)
@@ -63,20 +72,18 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
     intOSC.io.CLKHFPU := True
     
     //Connect the PLL output of 17.625Mhz to the 17.625MHz clock domain
+    clk12Domain.clock := io.clk_12Mhz
+    clk12Domain.reset := !io.reset_
+
+    //Connect the PLL output of 17.625Mhz to the 17.625MHz clock domain
     clk17Domain.clock := PLL.PLLOUTGLOBAL
-    clk17Domain.reset := !io.reset_
+    clk17Domain.reset := !Core12.reset
 
     //Connect the internal oscillator output to the 48MHz clock domain
     clk48Domain.clock := intOSC.io.CLKHF
-    clk48Domain.reset := !io.reset_
+    clk48Domain.reset := !Core12.reset
 
     val Core17 = new ClockingArea(clk17Domain) {
-        var reset = Reg(Bool) init (False)
-        var rstCounter = CounterFreeRun(25)
-        when(rstCounter.willOverflow){
-            reset := True
-        }
-
         val pro = new ProgrammingInterface(57600)
         io.serial_txd := pro.io.UartTX
         pro.io.UartRX := io.serial_rxd
@@ -88,7 +95,7 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
         //Dived the 17.625Mhz by 10 = 1.7625Mhz
         val areaDiv = new SlowArea(10) {
             var cosmacVIP = new VIP()
-                cosmacVIP.io.reset := reset
+                cosmacVIP.io.reset := True
                 cosmacVIP.io.Start := !pro.io.FlagOut(1)
                 cosmacVIP.io.Wait := !pro.io.FlagOut(2)
 
@@ -120,23 +127,22 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
             io.led_red := cosmacVIP.io.q
             io.keypad <> cosmacVIP.io.keypad
         }
+        val lcd_startFrame = !areaDiv.cosmacVIP.io.Pixie.INT
+        val lcd_startLine = !areaDiv.cosmacVIP.io.Pixie.DMAO
+        val lcd_dataClk = (areaDiv.cosmacVIP.io.CPU.TPB && areaDiv.cosmacVIP.io.CPU.SC === 2)
+        val lcd_data = areaDiv.cosmacVIP.io.CPU.DataOut
     }
 
     val lcd = ifGen(withLcd) (new Area(){    
-        val lcd_startFrame = !Core17.areaDiv.cosmacVIP.io.Pixie.INT
-        val lcd_startLine = !Core17.areaDiv.cosmacVIP.io.Pixie.DMAO
-        val lcd_dataClk = (Core17.areaDiv.cosmacVIP.io.CPU.TPB && Core17.areaDiv.cosmacVIP.io.CPU.SC === 2)
-        val lcd_data = Core17.areaDiv.cosmacVIP.io.CPU.DataOut
-
         val Core48 = new ClockingArea(clk48Domain) {
             
             //Clock Crossing
-            val startFrame = BufferCC(lcd_startFrame, False)
-            val startLine = BufferCC(lcd_startLine, False)
-            val dataClkB = BufferCC(lcd_dataClk, False)
+            val startFrame = BufferCC(Core17.lcd_startFrame, False)
+            val startLine = BufferCC(Core17.lcd_startLine, False)
+            val dataClkB = BufferCC(Core17.lcd_dataClk, False)
             val dataClk = dataClkB.fall()
             val dataClkD = RegNext(dataClk)
-            val data = RegNextWhen(lcd_data, dataClk) init(0)
+            val data = RegNextWhen(Core17.lcd_data, dataClk) init(0)
             
             var LCD = LCD_Pixie(10 ms)
             LCD.io.startFrame := startFrame
