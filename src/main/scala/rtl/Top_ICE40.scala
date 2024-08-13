@@ -91,13 +91,16 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
         val keyReady = False
         pro.io.keys.ready := keyReady.fall()
         
+        val Ram = new RamInit(ramFile, log2Up(0x1fff))
+            Ram.io.ena := True
 
         //Dived the 17.625Mhz by 10 = 1.7625Mhz
         val areaDiv = new SlowArea(10) {
             var cosmacVIP = new VIP()
-                cosmacVIP.io.reset := True
+                cosmacVIP.io.reset := !pro.io.FlagOut(0)
                 cosmacVIP.io.Start := !pro.io.FlagOut(1)
                 cosmacVIP.io.Wait := !pro.io.FlagOut(2)
+                cosmacVIP.io.ram.din := Ram.io.douta
 
             val Rom = new RamInit(romFile, log2Up(0x1ff))
                 Rom.io.ena := True
@@ -106,27 +109,25 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
                 Rom.io.addra := cosmacVIP.io.rom.addr
                 cosmacVIP.io.rom.data := Rom.io.douta
 
-            val Ram = new RamInit(ramFile, log2Up(0x1fff))
-                Ram.io.ena := True
-                cosmacVIP.io.ram.din := Ram.io.douta
-
-            pro.io.RamInterface.DataIn := Ram.io.douta
-            when(pro.io.FlagOut(2))
-            {
-                Ram.io.dina := pro.io.RamInterface.DataOut
-                Ram.io.wea := pro.io.RamInterface.Write.asBits
-                Ram.io.addra := (pro.io.RamInterface.Address.asUInt).asBits.resized
-            }otherwise{
-                Ram.io.dina := cosmacVIP.io.ram.dout
-                Ram.io.wea := cosmacVIP.io.ram.wr.asBits
-                Ram.io.addra := cosmacVIP.io.ram.addr
-            }
-
+            
             io.sync := cosmacVIP.io.sync
             io.video := cosmacVIP.io.video
             io.led_red := cosmacVIP.io.q
             io.keypad <> cosmacVIP.io.keypad
         }
+
+        pro.io.RamInterface.DataIn := Ram.io.douta
+        when(pro.io.FlagOut(2))
+        {
+            Ram.io.dina := pro.io.RamInterface.DataOut
+            Ram.io.wea := pro.io.RamInterface.Write.asBits
+            Ram.io.addra := pro.io.RamInterface.Address.resized
+        }otherwise{
+            Ram.io.dina := areaDiv.cosmacVIP.io.ram.dout
+            Ram.io.wea := areaDiv.cosmacVIP.io.ram.wr.asBits
+            Ram.io.addra := areaDiv.cosmacVIP.io.ram.addr
+        }
+
         val lcd_startFrame = !areaDiv.cosmacVIP.io.Pixie.INT
         val lcd_startLine = !areaDiv.cosmacVIP.io.Pixie.DMAO
         val lcd_dataClk = (areaDiv.cosmacVIP.io.CPU.TPB && areaDiv.cosmacVIP.io.CPU.SC === 2)
