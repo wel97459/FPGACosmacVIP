@@ -128,22 +128,24 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
             Ram.io.addra := areaDiv.cosmacVIP.io.ram.addr
         }
 
-        val lcd_startFrame = !areaDiv.cosmacVIP.io.Pixie.INT
-        val lcd_startLine = !areaDiv.cosmacVIP.io.Pixie.DMAO
-        val lcd_dataClk = (areaDiv.cosmacVIP.io.CPU.TPB && areaDiv.cosmacVIP.io.CPU.SC === 2)
-        val lcd_data = areaDiv.cosmacVIP.io.CPU.DataOut
+        val lcd = ifGen(withLcd) (new Area(){  
+            val startFrame = !areaDiv.cosmacVIP.io.Pixie.INT
+            val startLine = !areaDiv.cosmacVIP.io.Pixie.DMAO
+            val dataClk = (areaDiv.cosmacVIP.io.CPU.TPB && areaDiv.cosmacVIP.io.CPU.SC === 2)
+            val data = areaDiv.cosmacVIP.io.CPU.DataOut
+        })
     }
 
     val lcd = ifGen(withLcd) (new Area(){    
         val Core48 = new ClockingArea(clk48Domain) {
             
             //Clock Crossing
-            val startFrame = BufferCC(Core17.lcd_startFrame, False)
-            val startLine = BufferCC(Core17.lcd_startLine, False)
-            val dataClkB = BufferCC(Core17.lcd_dataClk, False)
+            val startFrame = BufferCC(Core17.lcd.startFrame, False)
+            val startLine = BufferCC(Core17.lcd.startLine, False)
+            val dataClkB = BufferCC(Core17.lcd.dataClk, False)
             val dataClk = dataClkB.fall()
             val dataClkD = RegNext(dataClk)
-            val data = RegNextWhen(Core17.lcd_data, dataClk) init(0)
+            val data = RegNextWhen(Core17.lcd.data, dataClk) init(0)
             
             var LCD = LCD_Pixie(10 ms)
             LCD.io.startFrame := startFrame
@@ -157,5 +159,5 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
 }
 
 object Top_ICE40_Verilog extends App {
-  Config.spinal.generateVerilog(new Top_ICE40(true, "./data/test_1861.bin", "./data/vip.rom"))
+  Config.spinal.generateVerilog(new Top_ICE40(false, "./data/test_1861.bin", "./data/vip.rom"))
 }
