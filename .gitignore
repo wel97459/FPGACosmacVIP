@@ -45,7 +45,6 @@ project/target/*
 #User
 /*.vhd
 /*.v
-UPduino3/Top*
 *.cf
 *.json
 *.vcd
