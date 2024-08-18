@@ -39,6 +39,8 @@ class VIP(val divideBy: BigInt) extends Component {
         val Pixie = new Bundle {
             val INT = out Bool()
             val DMAO = out Bool()
+            val VSync = out Bool()
+            val HSync = out Bool()
         }
 
         val CPU = new Bundle {
@@ -65,6 +67,8 @@ class VIP(val divideBy: BigInt) extends Component {
         Pixie.io.Disp_Off := (Cpu.io.N === 1 && Cpu.io.TPB && !Cpu.io.MRD)
         Pixie.io.Reset_ := io.reset
 
+        io.Pixie.VSync := Pixie.io.VSync
+        io.Pixie.HSync := Pixie.io.HSync
         io.Pixie.INT := Pixie.io.INT
         io.Pixie.DMAO := Pixie.io.DMAO
         

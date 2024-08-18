@@ -71,7 +71,7 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
     intOSC.io.CLKHFEN := True
     intOSC.io.CLKHFPU := True
     
-    //Connect the PLL output of 17.625Mhz to the 17.625MHz clock domain
+    //Connect the PLL output of 12Mhz to the 12MHz clock domain
     clk12Domain.clock := io.clk_12Mhz
     clk12Domain.reset := !io.reset_
 

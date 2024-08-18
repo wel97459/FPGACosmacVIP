@@ -49,7 +49,7 @@ Uint8 HSync_Edge=0;
 Uint8 VSync_Edge=0;
 Uint8 Ready_Edge=0;
 Uint8 Burst_Edge=0;
-Uint8 Video_Last=0;
+Uint8 Video_Last=0; 
 Uint8 MW_Last=0;
 Uint8 MR_Last=0;
 Uint8 P_Last=0;
@@ -203,7 +203,7 @@ void doNTSC(int CompSync, int Video)
     int xoff;
     for (i = ns2pos(vidTime); i < ns2pos(vidTime+DOT_ns); i++)
     {
-        xoff = i % CRT_CC_SAMPLES;
+        //xoff = i % CRT_CC_SAMPLES;
         // if(Burst) ire = ccburst[(i + 0) & 3];
         
         // if(Color > 0) {
@@ -238,7 +238,7 @@ void sim_run(){
     VIP->io_Start = (main_time>20);
     VIP->io_Wait = (main_time>20);
     VIP->io_keypad_col = 0xFF;
-    if(VIP->io_Pixie_INT && !VSync_Edge){
+    if(VIP->io_Pixie_VSync && !VSync_Edge){
         sim_draw();
         sprintf(tmpstr,"Frames/Frame%04i.png",FrameCount++);
         Uint64 ticks = SDL_GetTicks64();
@@ -249,13 +249,13 @@ void sim_run(){
         memset(sim_crt->analog, 0, CRT_INPUT_SIZE); 
     }
     doNTSC(VIP->io_sync, VIP->io_video);
-
     VIP->io_rom_data = rom[VIP->io_rom_addr];
 
     VIP->io_ram_din = ram[VIP->io_ram_addr];
     if(VIP->io_ram_wr && main_time > 11) ram[VIP->io_ram_addr] = VIP->io_ram_dout;
 
-    VSync_Edge = VIP->io_Pixie_INT;
+    VSync_Edge = VIP->io_Pixie_VSync;
+    HSync_Edge = VIP->io_Pixie_HSync;
     Video_Last = VIP->io_video;
     main_time++;
     VIP->clk = 1;

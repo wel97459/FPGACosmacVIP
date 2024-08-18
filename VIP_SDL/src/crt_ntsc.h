@@ -62,7 +62,7 @@ extern "C" {
  *      BLANK            SYNC           BLANK          BLANK          BLANK
  * 
  */
-#define DOT_ns 557UL
+#define DOT_ns 566UL
 #define DOTx6_ns         DOT_ns*6
 #define LINE_BEG         0
 #define FP_ns            (1*DOTx6_ns)      /* front porch */
