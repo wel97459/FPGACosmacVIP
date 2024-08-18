@@ -10,7 +10,7 @@ import MySpinalHardware._
 
 
 //Hardware definition
-class VIP() extends Component {
+class VIP(val divideBy: BigInt) extends Component {
     val io = new Bundle {
         val reset = in Bool()
         val video = out Bool()
@@ -22,14 +22,12 @@ class VIP() extends Component {
         val rom = new Bundle {
             val addr = out Bits(9 bits)
             val data = in Bits(8 bits)
-            val rd = out Bool()
         }
 
         val ram = new Bundle {
             val addr = out Bits(13 bits)
             val din = in Bits(8 bits)
             val dout = out Bits(8 bits)
-            val rd = out Bool()
             val wr = out Bool()
         }
 
@@ -57,7 +55,7 @@ class VIP() extends Component {
         io.CPU.SC := Cpu.io.SC
         io.CPU.DataOut := Cpu.io.DataOut
 
-    val Pixie = new Spinal1861(10)
+    val Pixie = new Spinal1861(divideBy)
         //Connection to Pixie
         Pixie.io.DataIn := Cpu.io.DataOut
         Pixie.io.SC := Cpu.io.SC

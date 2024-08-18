@@ -1,38 +1,74 @@
 //Generate the MyTopLevel's Verilog using the above custom configuration.
-// package mylib
+package Cosmac
 
-// import spinal.core._
-// import spinal.lib._
-// import spinal.lib.blackbox.lattice.ice40._
+import spinal.core._
+import spinal.lib._
+import spinal.core.sim._
 
-// import Spinal1802._
-// import MySpinalHardware._
-// import TFT_Driver._
+import Spinal1802._
+import Spinal1861._
 
-// object ComxGen {
-//     def main(args: Array[String]) {
+object CommacSpinalConfig extends SpinalConfig(
+    targetDirectory = "./gen",
+    oneFilePerComponent = false,
+    defaultConfigForClockDomains = ClockDomainConfig(resetKind = SYNC)
+)
 
-//         ComxSpinalConfig.generateVerilog({
-//             val dut = new Top();
-//             dut.clockedArea.CPU.OP.simPublic();
-//             dut.clockedArea.CPU.D.simPublic()
-//             dut.clockedArea.CPU.R(0).simPublic()
-//             dut.clockedArea.CPU.R(1).simPublic()
-//             dut.clockedArea.CPU.R(2).simPublic()
-//             dut.clockedArea.CPU.R(3).simPublic()
-//             dut.clockedArea.CPU.R(4).simPublic()
-//             dut.clockedArea.CPU.R(5).simPublic()
-//             dut.clockedArea.CPU.R(6).simPublic()
-//             dut.clockedArea.CPU.R(7).simPublic()
-//             dut.clockedArea.CPU.R(8).simPublic()
-//             dut.clockedArea.CPU.R(9).simPublic()
-//             dut.clockedArea.CPU.R(10).simPublic()
-//             dut.clockedArea.CPU.R(11).simPublic()
-//             dut.clockedArea.CPU.R(12).simPublic()
-//             dut.clockedArea.CPU.R(13).simPublic()
-//             dut.clockedArea.CPU.R(14).simPublic()
-//             dut.clockedArea.CPU.R(15).simPublic()
-//             dut
-//         }).printPruned
-//     }
-// }
+object VIPGen {
+    def main(args: Array[String]) {
+
+        CommacSpinalConfig.generateVerilog({
+            val dut = new VIP(0);
+            dut.Cpu.OP.simPublic();
+            dut.Cpu.D.simPublic();
+            dut.Cpu.R(0).simPublic();
+            dut.Cpu.R(1).simPublic();
+            dut.Cpu.R(2).simPublic();
+            dut.Cpu.R(3).simPublic();
+            dut.Cpu.R(4).simPublic();
+            dut.Cpu.R(5).simPublic();
+            dut.Cpu.R(6).simPublic();
+            dut.Cpu.R(7).simPublic();
+            dut.Cpu.R(8).simPublic();
+            dut.Cpu.R(9).simPublic();
+            dut.Cpu.R(10).simPublic();
+            dut.Cpu.R(11).simPublic();
+            dut.Cpu.R(12).simPublic();
+            dut.Cpu.R(13).simPublic();
+            dut.Cpu.R(14).simPublic();
+            dut.Cpu.R(15).simPublic();
+            dut
+        }).printPruned
+    }
+}
+
+object VIPSim {
+    def main(args: Array[String]) {
+        SimConfig.withWave.compile{
+            val dut = new VIP(0)
+            dut.Cpu.OP.simPublic();
+            dut.Cpu.io.Addr16.simPublic();
+            dut.Cpu.io.MWR.simPublic();
+            dut.Cpu.io.MRD.simPublic();
+            dut.Cpu.P.simPublic()
+            dut.Cpu.D.simPublic()
+            dut.Cpu.R(0).simPublic()
+            dut.Cpu.R(1).simPublic()
+            dut.Cpu.R(2).simPublic()
+            dut.Cpu.R(3).simPublic()
+            dut.Cpu.R(4).simPublic()
+            dut.Cpu.R(5).simPublic()
+            dut.Cpu.R(6).simPublic()
+            dut.Cpu.R(7).simPublic()
+            dut.Cpu.R(8).simPublic()
+            dut.Cpu.R(9).simPublic()
+            dut.Cpu.R(10).simPublic()
+            dut.Cpu.R(11).simPublic()
+            dut.Cpu.R(12).simPublic()
+            dut.Cpu.R(13).simPublic()
+            dut.Cpu.R(14).simPublic()
+            dut.Cpu.R(15).simPublic()
+            dut
+        }
+    }
+}

@@ -96,7 +96,7 @@ class Top_ICE40(val withLcd: Boolean, val ramFile: String, val romFile: String) 
 
         //Dived the 17.625Mhz by 10 = 1.7625Mhz
         val areaDiv = new SlowArea(10) {
-            var cosmacVIP = new VIP()
+            var cosmacVIP = new VIP(10)
                 cosmacVIP.io.reset := !pro.io.FlagOut(0)
                 cosmacVIP.io.Start := !pro.io.FlagOut(1)
                 cosmacVIP.io.Wait := !pro.io.FlagOut(2)
