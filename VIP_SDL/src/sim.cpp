@@ -142,6 +142,17 @@ void sim_init(unsigned char *v, SDL_Texture *td, void (*d)(), struct CRT *c){
 	#endif
 
     printf("CRT_INPUT_SIZE: %i\n", CRT_INPUT_SIZE);
+    printf("DOT_ns: %lu\n", DOT_ns);
+    printf("DOTx6_ns: %lu\n", DOTx6_ns);
+    printf("LINE_BEG: %lu\n", LINE_BEG);
+    printf("FP_ns: %lu\n", FP_ns);
+    printf("SYNC_ns: %lu\n", SYNC_ns);
+    printf("BW_ns: %lu\n", BW_ns);
+    printf("CB_ns: %lu\n", CB_ns);
+    printf("BP_ns: %lu\n", BP_ns);
+    printf("AV_ns: %lu\n", AV_ns);
+    printf("HB_ns: %lu\n", HB_ns);
+    printf("LINE_ns: %lu\n", LINE_ns);
 }
 
 void sim_keyevent(int key){
@@ -201,7 +212,7 @@ void doNTSC(int CompSync, int Video)
 
     uint32_t i;
     int xoff;
-    for (i = ns2pos(vidTime); i < ns2pos(vidTime+DOT_ns); i++)
+    for (i = ns2pos(vidTime); i < ns2pos(vidTime+DOTx6_ns); i++)
     {
         //xoff = i % CRT_CC_SAMPLES;
         // if(Burst) ire = ccburst[(i + 0) & 3];
@@ -228,7 +239,7 @@ void doNTSC(int CompSync, int Video)
         sim_crt->analog[i] = ire;
     }
 
-    vidTime+=DOT_ns;
+    vidTime+=DOTx6_ns;
 	return;
 }
 
@@ -238,7 +249,7 @@ void sim_run(){
     VIP->io_Start = (main_time>20);
     VIP->io_Wait = (main_time>20);
     VIP->io_keypad_col = 0xFF;
-    if(VIP->io_Pixie_VSync && !VSync_Edge){
+    if(!VIP->io_Pixie_VSync && VSync_Edge){
         sim_draw();
         sprintf(tmpstr,"Frames/Frame%04i.png",FrameCount++);
         Uint64 ticks = SDL_GetTicks64();
@@ -264,7 +275,7 @@ void sim_run(){
     #ifdef TRACE
         if(trace){
             main_trace++;
-            m_trace->dump (main_trace);
+            m_trace->dump(main_trace*((DOT_ns/2)*1000));
         }
     #endif
 
@@ -275,7 +286,7 @@ void sim_run(){
     #ifdef TRACE
         if(trace){
             main_trace++;
-            m_trace->dump (main_trace);
+            m_trace->dump(main_trace*((DOT_ns/2)*1000));
         }
     #endif
 }

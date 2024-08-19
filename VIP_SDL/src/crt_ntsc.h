@@ -45,7 +45,7 @@ extern "C" {
  * Larger = more stable, until it's so large that it is never reached in which
  *          case the CRT won't be able to sync
  */
-#define CRT_HSYNC_THRESH 4
+#define CRT_HSYNC_THRESH 10
 #define CRT_VSYNC_THRESH 180
 
 /*
@@ -62,13 +62,13 @@ extern "C" {
  *      BLANK            SYNC           BLANK          BLANK          BLANK
  * 
  */
-#define DOT_ns 566UL
-#define DOTx6_ns         DOT_ns*6
-#define LINE_BEG         0
+#define DOT_ns           559UL
+#define DOTx6_ns         559UL * 6
+#define LINE_BEG         0UL
 #define FP_ns            (1*DOTx6_ns)      /* front porch */
 #define SYNC_ns          (4*DOTx6_ns)      /* sync tip */
 #define BW_ns            (1*DOTx6_ns)       /* breezeway */
-#define CB_ns            (3*DOTx6_ns)      /* color burst */
+#define CB_ns            (4*DOTx6_ns)      /* color burst */
 #define BP_ns            (1*DOTx6_ns)      /* back porch */
 #define AV_ns            (50*DOTx6_ns)     /* active video */
 #define HB_ns            (FP_ns + SYNC_ns + BW_ns + CB_ns + BP_ns) /* h blank */
