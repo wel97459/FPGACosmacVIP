@@ -131,7 +131,7 @@ void sim_init(unsigned char *v, SDL_Texture *td, void (*d)(), struct CRT *c){
     printf("Started.\n");
     genIQ();
     loadFile("../data/vip.rom", rom, 0x3fff);
-    loadFile("../data/test_1861.bin", ram, 0x100);
+    loadFile("../data/Chip8_Tetris2.bin", ram, 0x3fff);
     VIP = new VVIP();
 
 	#ifdef TRACE
@@ -212,7 +212,7 @@ void doNTSC(int CompSync, int Video)
 
     uint32_t i;
     int xoff;
-    for (i = ns2pos(vidTime); i < ns2pos(vidTime+DOTx6_ns); i++)
+    for (i = ns2pos(vidTime); i < ns2pos(vidTime+VERILOG_ns); i++)
     {
         //xoff = i % CRT_CC_SAMPLES;
         // if(Burst) ire = ccburst[(i + 0) & 3];
@@ -239,7 +239,7 @@ void doNTSC(int CompSync, int Video)
         sim_crt->analog[i] = ire;
     }
 
-    vidTime+=DOTx6_ns;
+    vidTime+=VERILOG_ns;
 	return;
 }
 

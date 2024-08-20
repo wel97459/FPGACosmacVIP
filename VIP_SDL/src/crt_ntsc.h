@@ -21,12 +21,12 @@ extern "C" {
  * 
  */
 
-#define CRT_CC_LINE 2557
+#define CRT_CC_LINE 2275/2
 //#define CRT_CC_LINE 2275
 
 /* NOTE, in general, increasing CRT_CB_FREQ reduces blur and bleed */
 #define CRT_CB_FREQ     4 /* carrier frequency relative to sample rate */
-#define CRT_HRES        ((CRT_CC_LINE * CRT_CB_FREQ)/6) /* horizontal res */
+#define CRT_HRES        ((CRT_CC_LINE * CRT_CB_FREQ)/8) /* horizontal res */
 #define CRT_VRES        262                       /* vertical resolution */
 #define CRT_INPUT_SIZE  (CRT_HRES * CRT_VRES)
 
@@ -63,14 +63,15 @@ extern "C" {
  * 
  */
 #define DOT_ns           559UL
-#define DOTx6_ns         559UL * 6
+#define VERILOG_ns       DOT_ns*1
+#define DOTx6_ns         DOT_ns*2
 #define LINE_BEG         0UL
 #define FP_ns            (1*DOTx6_ns)      /* front porch */
-#define SYNC_ns          (4*DOTx6_ns)      /* sync tip */
+#define SYNC_ns          (2*DOTx6_ns)      /* sync tip */
 #define BW_ns            (1*DOTx6_ns)       /* breezeway */
-#define CB_ns            (4*DOTx6_ns)      /* color burst */
+#define CB_ns            (2*DOTx6_ns)      /* color burst */
 #define BP_ns            (1*DOTx6_ns)      /* back porch */
-#define AV_ns            (50*DOTx6_ns)     /* active video */
+#define AV_ns            (49*DOTx6_ns)     /* active video */
 #define HB_ns            (FP_ns + SYNC_ns + BW_ns + CB_ns + BP_ns) /* h blank */
 /* line duration should be ~63500 ns */
 #define LINE_ns          (FP_ns + SYNC_ns + BW_ns + CB_ns + BP_ns + AV_ns)
