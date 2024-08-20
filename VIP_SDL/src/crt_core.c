@@ -289,7 +289,7 @@ crt_init(struct CRT *v, int w, int h, int f, unsigned char *out)
 }
 
 extern void
-crt_demodulate(struct CRT *v, int noise)
+crt_demodulate(struct CRT *v)
 {
     /* made static so all this data does not go on the stack */
     static struct {
@@ -324,7 +324,7 @@ crt_demodulate(struct CRT *v, int noise)
         rn = (214019 * rn + 140327895);
 
         /* signal + noise */
-        s = v->analog[i] + (((((rn >> 16) & 0xff) - 0x7f) * noise) >> 8);
+        s = v->analog[i] + (((((rn >> 16) & 0xff) - 0x7f) * v->noise) >> 8);
         if (s >  127) { s =  127; }
         if (s < -127) { s = -127; }
         v->inp[i] = s;

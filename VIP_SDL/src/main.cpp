@@ -127,7 +127,7 @@ static void draw()
 
 void drawCRT()
 {
-	crt_demodulate(&crt, 0);
+	crt_demodulate(&crt);
 	SDL_UpdateTexture(texDisplay, NULL, video, WINDOW_WIDTH * sizeof(Uint32));
 
 	SDL_RenderCopy(renderer, texDisplay, NULL, NULL);

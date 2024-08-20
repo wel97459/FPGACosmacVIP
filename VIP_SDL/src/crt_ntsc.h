@@ -45,8 +45,8 @@ extern "C" {
  * Larger = more stable, until it's so large that it is never reached in which
  *          case the CRT won't be able to sync
  */
-#define CRT_HSYNC_THRESH 10
-#define CRT_VSYNC_THRESH 180
+#define CRT_HSYNC_THRESH 5
+#define CRT_VSYNC_THRESH 70
 
 /*
  *                      FULL HORIZONTAL LINE SIGNAL (~63500 ns)

@@ -124,6 +124,7 @@ void sim_init(unsigned char *v, SDL_Texture *td, void (*d)(), struct CRT *c){
     screen = td;
     sim_video = v;
     sim_crt = c;
+    sim_crt->noise = 5;
 
     SDL_UpdateTexture(screen, NULL, screenPixels, 240 * sizeof(Uint32));
     sim_draw();
@@ -131,7 +132,7 @@ void sim_init(unsigned char *v, SDL_Texture *td, void (*d)(), struct CRT *c){
     printf("Started.\n");
     genIQ();
     loadFile("../data/vip.rom", rom, 0x3fff);
-    loadFile("../data/Chip8_Tetris2.bin", ram, 0x3fff);
+    loadFile("../data/test_1861.bin", ram, 0x3fff);
     VIP = new VVIP();
 
 	#ifdef TRACE
@@ -156,20 +157,20 @@ void sim_init(unsigned char *v, SDL_Texture *td, void (*d)(), struct CRT *c){
 }
 
 void sim_keyevent(int key){
-    if (key == SDLK_9 && colors.index > 0) {
-        colors.index -= 1;
-        printf("Index:%i\n", colors.index);
+    if (key == SDLK_9 && sim_crt->noise > 0) {
+        sim_crt->noise -= 1;
+        printf("Index:%i\n", sim_crt->noise);
     }
-    if (key == SDLK_0 && colors.index < 8) {
-        colors.index += 1;
-        printf("Index:%i\n", colors.index);
+    if (key == SDLK_0 && sim_crt->noise < 100) {
+        sim_crt->noise += 1;
+        printf("Index:%i\n", sim_crt->noise);
     }
     if (key == SDLK_o) {
-        colors.Amplitude[colors.index] -= 1000;
+        colors.Amplitude[colors.index] -= 1;
         printf("Amplitude[%u]:%i\n",colors.index, colors.Amplitude[colors.index]);
     }
     if (key == SDLK_p) {
-        colors.Amplitude[colors.index] += 1000;
+        colors.Amplitude[colors.index] += 1;
         printf("Amplitude[%u]:%i\n",colors.index, colors.Amplitude[colors.index]);
     }
     if (key == SDLK_k) {
